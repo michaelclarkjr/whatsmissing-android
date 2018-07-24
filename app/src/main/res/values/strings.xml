@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Whats Missing?</string>
+    <string name="action_settings">Settings</string>
+    <string name="subscription_key">0088233b44974a01949d13523e80185e</string>
+    <string name="subscription_apiroot">https://eastus.api.cognitive.microsoft.com/vision/v1.0</string>
+</resources>

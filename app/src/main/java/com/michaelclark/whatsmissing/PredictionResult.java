@@ -1,9 +1,8 @@
 package com.michaelclark.whatsmissing;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class PredictionResult
+public class PredictionResult implements Comparable<PredictionResult>
 {
     private String     tagId;
     private String     tagName;

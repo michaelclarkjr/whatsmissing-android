@@ -1,4 +1,4 @@
-package com.kroger.ms.hack.demo.parser;
+package com.michaelclark.whatsmissing;
 
 import java.math.BigDecimal;
 

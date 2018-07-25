@@ -39,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -254,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
 
                 for (PredictionResult result : results)
                 {
-                    expected.remove(result.getTag());
-                    displayString += "Tag: " + result.getTag() + "\nProbability: " + result.getProbability() + "\nIs A Match?: " + result.isAcceptable() + "\n\n";
+                    expected.remove(result.getTagName());
+                    displayString += "Tag: " + result.getTagName() + "\nProbability: " + result.getProbability() + "\nIs A Match?: " + result.isAcceptable() + "\n\n";
                 }
 
                 String missing = "";
@@ -270,21 +271,22 @@ public class MainActivity extends AppCompatActivity {
 				for (PredictionResult result : results)
 				{
 					int expectedPos = sort.indexOf(result.getTagName());
-					if (missing.indexOf(result.getTagName()) < 0) 
-					{
-						pos+=1;
-					}
-					else 
+					if (missing.indexOf(result.getTagName()) < 0)
 					{
 						if (pos != expectedPos)
 						{
 							changedOrderString += "Tag: " + result.getTagName() + " moved from " + (expectedPos+1) + " to " + (pos+1) + "\n";
 						}
 					}
+
+					pos++;
 				}
 
                 mEditText.setText(displayString + "\n\n" + changedOrderString);
-                displayNotification(missing);
+
+				if (!missing.equals("")) {
+                    displayNotification(missing);
+                }
             }
         }
     }

@@ -1,13 +1,18 @@
 package com.michaelclark.whatsmissing;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +46,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_TAKE_PHOTO = 0;
+    private static final String CHANNEL_ID = "MissingChannel";
     public VisionServiceClient client;
 
     // The URI of the image selected to detect.
@@ -80,6 +86,23 @@ public class MainActivity extends AppCompatActivity {
 
         mEditText = findViewById(R.id.editTextResult);
 
+        createNotificationChannel();
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Missing Channel";
+            String description = "Things for Whats Missing?";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     public void takePhoto(View view) {
@@ -239,8 +262,26 @@ public class MainActivity extends AppCompatActivity {
                     missing += "Missing: " + result + "\n";
                 }
 
-                mEditText.setText(missing + "\n" + displayString);
+                mEditText.setText(displayString);
+                displayNotification(missing);
             }
         }
+    }
+
+    private void displayNotification(String missingInfo)
+    {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_error_24px)
+                .setContentTitle("Out of Stock Alert!")
+                .setContentText(missingInfo)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(missingInfo))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+// notificationId is a unique int for each notification that you must define
+        notificationManager.notify(10101, mBuilder.build());
     }
 }

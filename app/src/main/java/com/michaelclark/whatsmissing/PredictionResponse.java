@@ -68,16 +68,27 @@ public class PredictionResponse
 
     public List<PredictionResult> getAcceptableResults()
     {
-        List<PredictionResult> acceptableResults = new ArrayList<>();
-
+        Map<String, PredictionResult> acceptableResults = new HashMap<>();
         for (PredictionResult result : getPredictions())
         {
-            if (result.isAcceptable() && !acceptableResults.contains(result))
+            if (result.isAcceptable())
             {
-                acceptableResults.add(result);
+                if (!acceptableResults.containsKey(result.getTagName()))
+                {
+                    acceptableResults.put(result.getTagName(), result);
+                }
+                else {
+                    PredictionResult best = acceptableResults.get(result.getTagName());
+                    if (best.getProbability().compareTo(result.getProbability()) < 0)
+                    {
+                        acceptableResults.put(result.getTagName(), result);
+                    }
+                }
             }
         }
-        return acceptableResults;
+        List<PredictionResult> results = new ArrayList<>(acceptableResults.values());
+        Collections.sort(results);
+        return results;
     }
 
 }

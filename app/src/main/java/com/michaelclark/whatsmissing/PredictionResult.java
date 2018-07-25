@@ -8,26 +8,12 @@ public class PredictionResult
     private String     tagId;
     private String     tagName;
     private BigDecimal probability = new BigDecimal(0D);
+    private BoundingBox boundingBox = new BoundingBox();
 
     private static final BigDecimal threshold = new BigDecimal(.75D);
 
     public PredictionResult()
     {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PredictionResult that = (PredictionResult) o;
-        return Objects.equals(tagId, that.tagId) &&
-                Objects.equals(tagName, that.tagName);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(tagId, tagName);
     }
 
     public String getTagId()
@@ -40,14 +26,14 @@ public class PredictionResult
         this.tagId = tagId;
     }
 
-    public String getTag()
+    public String getTagName()
     {
         return tagName;
     }
 
-    public void setTag(String tag)
+    public void setTagName(String tagName)
     {
-        this.tagName = tag;
+        this.tagName = tagName;
     }
 
     public BigDecimal getProbability()
@@ -62,7 +48,22 @@ public class PredictionResult
 
     public boolean isAcceptable()
     {
-
         return this.probability.compareTo(threshold) >= 0;
     }
+
+    public BoundingBox getBoundingBox()
+    {
+        return boundingBox;
+    }
+
+    public void setBoundingBox(BoundingBox boundingBox)
+    {
+        this.boundingBox = boundingBox;
+    }
+
+    @Override
+    public int compareTo(PredictionResult predictionResult)
+    {
+        return this.getBoundingBox().compareTo(predictionResult.getBoundingBox());
+	}
 }

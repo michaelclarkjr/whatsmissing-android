@@ -248,6 +248,9 @@ public class MainActivity extends AppCompatActivity {
                 String displayString = "";
 
                 HashSet<String> expected = new HashSet<>(Arrays.asList("small water", "pop can", "water bottle", "coffee"));
+				
+				List<String> sort = new ArrayList<>(
+					Arrays.asList("small water", "pop can", "water bottle", "coffee"));
 
                 for (PredictionResult result : results)
                 {
@@ -261,8 +264,26 @@ public class MainActivity extends AppCompatActivity {
                 {
                     missing += "Missing: " + result + "\n";
                 }
+				
+				String changedOrderString = "";
+				int pos=0;
+				for (PredictionResult result : results)
+				{
+					int expectedPos = sort.indexOf(result.getTagName());
+					if (missing.indexOf(result.getTagName()) < 0) 
+					{
+						pos+=1;
+					}
+					else 
+					{
+						if (pos != expectedPos)
+						{
+							changedOrderString += "Tag: " + result.getTagName() + " moved from " + (expectedPos+1) + " to " + (pos+1) + "\n";
+						}
+					}
+				}
 
-                mEditText.setText(displayString);
+                mEditText.setText(displayString + "\n\n" + changedOrderString);
                 displayNotification(missing);
             }
         }
